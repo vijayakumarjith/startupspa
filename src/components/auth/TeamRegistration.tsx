@@ -39,6 +39,7 @@ const TeamRegistration: React.FC<TeamRegistrationProps> = ({
 }) => {
   const [teamData, setTeamData] = useState({
     teamName: '',
+    collegeName: '', // Added college name field
     teamSize: 2,
     members: Array(5).fill({ name: '', phone: '', email: '' } as TeamMember),
   });
@@ -67,6 +68,7 @@ const TeamRegistration: React.FC<TeamRegistrationProps> = ({
 
           setTeamData({
             teamName: data.teamName || '',
+            collegeName: data.collegeName || '', // Added college name field
             teamSize: data.teamSize || 2,
             members:
               data.members || Array(5).fill({ name: '', phone: '', email: '' }),
@@ -76,7 +78,7 @@ const TeamRegistration: React.FC<TeamRegistrationProps> = ({
             setRegistrationId(data.registrationId);
           }
 
-          // Check for payment status - now checking for "paid" (lowercase)
+          // Check for payment status
           if (data.paymentStatus === 'paid') {
             setIsSuccess(true);
             setPaymentStatus('paid');
@@ -169,6 +171,10 @@ const TeamRegistration: React.FC<TeamRegistrationProps> = ({
         throw new Error('Team name is required');
       }
 
+      if (!teamData.collegeName.trim()) {
+        throw new Error('College name is required'); // Added validation for college name
+      }
+
       const requiredMembers = teamData.members.slice(0, teamData.teamSize);
       const isValidTeam = requiredMembers.every(
         (member) =>
@@ -187,6 +193,7 @@ const TeamRegistration: React.FC<TeamRegistrationProps> = ({
       const teamDocRef = doc(db, 'teams', userId);
       await setDoc(teamDocRef, {
         teamName: teamData.teamName,
+        collegeName: teamData.collegeName, // Added college name field
         teamSize: teamData.teamSize,
         members: teamData.members.slice(0, teamData.teamSize),
         createdAt: new Date().toISOString(),
@@ -399,6 +406,9 @@ const TeamRegistration: React.FC<TeamRegistrationProps> = ({
               Team Name: <span className="text-white">{teamData.teamName}</span>
             </p>
             <p className="text-purple-400">
+              College Name: <span className="text-white">{teamData.collegeName}</span> {/* Added college name */}
+            </p>
+            <p className="text-purple-400">
               Team Size:{' '}
               <span className="text-white">{teamData.teamSize} members</span>
             </p>
@@ -496,6 +506,35 @@ const TeamRegistration: React.FC<TeamRegistrationProps> = ({
                       required
                     />
                     <Users className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  </div>
+                </div>
+
+                {/* College Name Field */}
+                <div>
+                  <label className="block text-gray-300 mb-2 text-sm sm:text-base">College Name</label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={teamData.collegeName}
+                      onChange={(e) =>
+                        setTeamData({ ...teamData, collegeName: e.target.value })
+                      }
+                      className="w-full px-4 py-3 bg-white/5 rounded-lg pl-10 focus:ring-2 focus:ring-purple-500 outline-none text-white text-sm sm:text-base"
+                      required
+                    />
+                    <svg
+                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                      />
+                    </svg>
                   </div>
                 </div>
 
@@ -669,6 +708,12 @@ const TeamRegistration: React.FC<TeamRegistrationProps> = ({
                   </span>
                 </div>
                 <div className="flex justify-between items-center mb-4 text-sm sm:text-base">
+                  <span className="text-gray-300">College Name:</span>
+                  <span className="text-white font-semibold">
+                    {teamData.collegeName}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center mb-4 text-sm sm:text-base">
                   <span className="text-gray-300">Team Size:</span>
                   <span className="text-white font-semibold">
                     {teamData.teamSize} members
@@ -745,7 +790,7 @@ const TeamRegistration: React.FC<TeamRegistrationProps> = ({
                   <div className="bg-yellow-500/10 p-4 rounded-lg text-yellow-300 text-xs sm:text-sm">
                     <p>
                       Important: Make sure to use your Registration ID during
-                      payment to ensure payment to ensure your payment is properly tracked.
+                      payment to ensure your payment is properly tracked.
                     </p>
                   </div>
                 </div>
