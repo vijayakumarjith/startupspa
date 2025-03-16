@@ -30,7 +30,7 @@ const Timeline = () => {
       description: 'Offline',
     },
     {
-      date: '17 March 2025 Onwards',
+      date: '19 March 2025 Onwards',
       title: 'Phase 2',
       description: 'Proposal and final product vedio submission',
     },
