@@ -73,6 +73,11 @@ const PhaseOneForm: React.FC<PhaseOneFormProps> = ({ userId, userName }) => {
   }, [userId]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (isSubmitted) {
+      setError('You cannot modify your submission after initial submission');
+      return;
+    }
+    
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
       if (selectedFile.type !== 'application/vnd.openxmlformats-officedocument.presentationml.presentation') {
@@ -90,25 +95,38 @@ const PhaseOneForm: React.FC<PhaseOneFormProps> = ({ userId, userName }) => {
     setLoading(true);
 
     try {
-      // Validate required fields
+      if (isSubmitted) {
+        // If already submitted, only allow YouTube link update
+        if (formData.youtubeLink === '') {
+          throw new Error('Please provide a YouTube video link');
+        }
+
+        await updateDoc(doc(db, 'phase1_submissions', userId), {
+          youtubeLink: formData.youtubeLink,
+          updatedAt: new Date().toISOString(),
+        });
+
+        setSuccess('YouTube link updated successfully!');
+        setTimeout(() => setSuccess(''), 5000);
+        return;
+      }
+
+      // Validate required fields for initial submission
       if (!formData.collegeName || !formData.whatsappNumber || !formData.productDescription || !formData.solution) {
         throw new Error('Please fill in all required fields');
       }
 
-      // If this is the initial submission, require the PPT file
-      if (!isSubmitted && !file) {
+      if (!file) {
         throw new Error('Please upload your presentation file');
       }
 
       let updatedFormData = { ...formData };
 
-      // Handle file upload if a new file is selected
-      if (file) {
-        const fileRef = ref(storage, `presentations/${userId}_${file.name}`);
-        await uploadBytes(fileRef, file);
-        const fileUrl = await getDownloadURL(fileRef);
-        updatedFormData.fileUrl = fileUrl;
-      }
+      // Handle file upload
+      const fileRef = ref(storage, `presentations/${userId}_${file.name}`);
+      await uploadBytes(fileRef, file);
+      const fileUrl = await getDownloadURL(fileRef);
+      updatedFormData.fileUrl = fileUrl;
 
       // Save submission data
       await setDoc(doc(db, 'phase1_submissions', userId), {
@@ -122,7 +140,6 @@ const PhaseOneForm: React.FC<PhaseOneFormProps> = ({ userId, userName }) => {
       setSuccess('Your submission has been saved successfully!');
       setIsSubmitted(true);
       
-      // Clear success message after 5 seconds
       setTimeout(() => setSuccess(''), 5000);
     } catch (err: any) {
       console.error('Submission error:', err);
@@ -160,8 +177,9 @@ const PhaseOneForm: React.FC<PhaseOneFormProps> = ({ userId, userName }) => {
               <div>
                 <h3 className="text-blue-400 font-semibold mb-2">Important Notice</h3>
                 <p className="text-gray-300 text-sm">
-                  Please submit your PPT presentation first. You can add your YouTube video link later, 
-                  but it must be submitted by April 2nd, 2025.
+                  {isSubmitted 
+                    ? 'You can only update your YouTube video link after initial submission. All other fields are locked.'
+                    : 'Please submit your PPT presentation first. You can add your YouTube video link later, but it must be submitted by April 2nd, 2025.'}
                 </p>
               </div>
             </div>
@@ -175,7 +193,7 @@ const PhaseOneForm: React.FC<PhaseOneFormProps> = ({ userId, userName }) => {
                 <span className="text-green-400">Initial submission complete!</span>
               </div>
               <p className="text-gray-300 text-sm mt-2">
-                You can still update your submission and add your YouTube video link until April 2nd, 2025.
+                You can still update your YouTube video link until April 2nd, 2025.
               </p>
             </div>
           )}
@@ -229,9 +247,10 @@ const PhaseOneForm: React.FC<PhaseOneFormProps> = ({ userId, userName }) => {
                 <input
                   type="text"
                   value={formData.collegeName}
-                  onChange={(e) => setFormData({ ...formData, collegeName: e.target.value })}
+                  onChange={(e) => !isSubmitted && setFormData({ ...formData, collegeName: e.target.value })}
                   className="w-full px-4 py-2 bg-white/5 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none text-white"
                   required
+                  disabled={isSubmitted}
                 />
               </div>
 
@@ -240,9 +259,10 @@ const PhaseOneForm: React.FC<PhaseOneFormProps> = ({ userId, userName }) => {
                 <input
                   type="tel"
                   value={formData.whatsappNumber}
-                  onChange={(e) => setFormData({ ...formData, whatsappNumber: e.target.value })}
+                  onChange={(e) => !isSubmitted && setFormData({ ...formData, whatsappNumber: e.target.value })}
                   className="w-full px-4 py-2 bg-white/5 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none text-white"
                   required
+                  disabled={isSubmitted}
                 />
               </div>
             </div>
@@ -251,10 +271,11 @@ const PhaseOneForm: React.FC<PhaseOneFormProps> = ({ userId, userName }) => {
               <label className="block text-gray-300 mb-2">Product Description</label>
               <textarea
                 value={formData.productDescription}
-                onChange={(e) => setFormData({ ...formData, productDescription: e.target.value })}
+                onChange={(e) => !isSubmitted && setFormData({ ...formData, productDescription: e.target.value })}
                 className="w-full px-4 py-2 bg-white/5 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none text-white"
                 rows={4}
                 required
+                disabled={isSubmitted}
               />
             </div>
 
@@ -262,10 +283,11 @@ const PhaseOneForm: React.FC<PhaseOneFormProps> = ({ userId, userName }) => {
               <label className="block text-gray-300 mb-2">Solution Overview</label>
               <textarea
                 value={formData.solution}
-                onChange={(e) => setFormData({ ...formData, solution: e.target.value })}
+                onChange={(e) => !isSubmitted && setFormData({ ...formData, solution: e.target.value })}
                 className="w-full px-4 py-2 bg-white/5 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none text-white"
                 rows={4}
                 required
+                disabled={isSubmitted}
               />
             </div>
 
@@ -281,14 +303,17 @@ const PhaseOneForm: React.FC<PhaseOneFormProps> = ({ userId, userName }) => {
                   accept=".pptx"
                   className="hidden"
                   id="ppt-upload"
+                  disabled={isSubmitted}
                 />
                 <label
                   htmlFor="ppt-upload"
-                  className="flex items-center justify-center px-4 py-2 bg-white/5 rounded-lg border-2 border-dashed border-purple-500/30 hover:border-purple-500/50 cursor-pointer"
+                  className={`flex items-center justify-center px-4 py-2 bg-white/5 rounded-lg border-2 border-dashed border-purple-500/30 hover:border-purple-500/50 cursor-pointer ${
+                    isSubmitted ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
                 >
                   <Upload className="w-5 h-5 text-purple-400 mr-2" />
                   <span className="text-gray-300">
-                    {file ? file.name : formData.fileUrl ? 'Replace current presentation' : 'Choose PPT file'}
+                    {file ? file.name : formData.fileUrl ? 'Presentation uploaded' : 'Choose PPT file'}
                   </span>
                 </label>
               </div>
@@ -355,7 +380,7 @@ const PhaseOneForm: React.FC<PhaseOneFormProps> = ({ userId, userName }) => {
                 </>
               ) : (
                 <>
-                  {isSubmitted ? 'Update Submission' : 'Submit Entry'}
+                  {isSubmitted ? 'Update YouTube Link' : 'Submit Entry'}
                   <Upload className="w-5 h-5 ml-2" />
                 </>
               )}
