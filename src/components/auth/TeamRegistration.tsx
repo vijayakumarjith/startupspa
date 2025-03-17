@@ -595,7 +595,6 @@ const TeamRegistration: React.FC<TeamRegistrationProps> = ({
                             onChange={(e) => handleInputChange(index, 'name', e.target.value)}
                             className="w-full px-4 py-3 bg-white/5 rounded-lg pl-10 focus:ring-2 focus:ring-purple-500 outline-none text-white text-sm sm:text-base"
                             required
-                            readOnly={index === 0}
                           />
                           <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                         </div>
@@ -611,7 +610,6 @@ const TeamRegistration: React.FC<TeamRegistrationProps> = ({
                             onChange={(e) => handleInputChange(index, 'phone', e.target.value)}
                             className="w-full px-4 py-3 bg-white/5 rounded-lg pl-10 focus:ring-2 focus:ring-purple-500 outline-none text-white text-sm sm:text-base"
                             required
-                            readOnly={index === 0}
                           />
                           <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                         </div>
@@ -627,7 +625,6 @@ const TeamRegistration: React.FC<TeamRegistrationProps> = ({
                             onChange={(e) => handleInputChange(index, 'email', e.target.value)}
                             className="w-full px-4 py-3 bg-white/5 rounded-lg pl-10 focus:ring-2 focus:ring-purple-500 outline-none text-white text-sm sm:text-base"
                             required
-                            readOnly={index === 0}
                           />
                           <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                         </div>
