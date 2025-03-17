@@ -34,6 +34,11 @@ const Hero = () => {
       <div className="relative z-10 w-full max-w-4xl mx-auto px-4 py-20 sm:py-32">
         <div className="text-center">
           <HeroTitle typedRef={typedRef} />
+          <div className="mb-8">
+            <p className="text-xl text-gray-300">Hosted by</p>
+            <h3 className="text-2xl font-bold text-purple-400 mt-2">EDC Rajalakshmi Engineering College</h3>
+            <p className="text-lg text-blue-400 mt-1">Department of Master of Business Administration</p>
+          </div>
           <CountdownTimer />
           <HeroButtons />
         </div>
