@@ -25,17 +25,17 @@ const Timeline = () => {
       description: 'Online',
     },
     {
-      date: '20 March 2025',
+      date: 'TBA',
       title: 'Workshop 2',
       description: 'Offline',
     },
     {
-      date: '19 March 2025 Onwards',
+      date: '20 March 2025 Onwards',
       title: 'Phase 2',
       description: 'Proposal and final product vedio submission',
     },
     {
-      date: 'TBH',
+      date: 'TBA',
       title: 'Results of Phase 2',
       description: 'Ticket to Entry Finale',
     },
