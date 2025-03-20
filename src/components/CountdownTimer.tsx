@@ -56,7 +56,7 @@ const CountdownTimer = () => {
           </h3>
           <p className="text-lg text-gray-300">See you in 2026!</p>
           <img
-            src="https://cdnl.iconscout.com/lottie/premium/thumb/closed-animated-icon-download-in-lottie-json-gif-static-svg-file-formats--text-word-sign-board-and-notice-pack-miscellaneous-icons-9264540.mp4"
+            src="https://media.tenor.com/Kjs1TtCLkVoAAAAM/open-closed.gif"
             alt="Registration Closed"
             className="w-64 h-64 mt-4 rounded-lg shadow-lg"
           />
