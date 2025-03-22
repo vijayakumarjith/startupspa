@@ -1,45 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Under Maintenance - Stark Style</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            text-align: center;
-            background-color: #1a1a1a;
-            color: #fff;
-            padding: 50px;
-        }
-        h1 {
-            color: #f39c12;
-        }
-        .video-container, .gif-container {
-            margin: 20px auto;
-        }
-        iframe {
-            width: 560px;
-            height: 315px;
-        }
-        img {
-            width: 300px;
-            height: auto;
-        }
-    </style>
-</head>
-<body>
-    <h1>🚧 Under Maintenance 🚧</h1>
-    <p><strong>"Relax, genius at work! Well… actually, taking a coffee break." ☕😎</strong></p>
-    
-    <div class="video-container">
-        <p>Meanwhile, enjoy this masterpiece of a man being iconic:</p>
-        <iframe src="https://www.youtube.com/embed/606RfUUgzx4?autoplay=1&loop=1&playlist=606RfUUgzx4" frameborder="0" allowfullscreen></iframe>
+import React from 'react';
+import { motion } from 'framer-motion';
+
+const AuthPage: React.FC = () => {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.9 }}
+        className="relative w-full max-w-2xl text-center"
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-600/30 to-blue-600/30 blur-xl"></div>
+        <div className="relative rounded-2xl backdrop-blur-xl bg-black/40 border border-purple-500/20 p-6 sm:p-8">
+          <h1 className="text-4xl sm:text-5xl font-bold gradient-text mb-6">
+            Under Maintenance
+          </h1>
+          <p className="text-gray-300 text-lg mb-6">
+            "JARVIS is currently upgrading the system. Please stand by..."
+          </p>
+          <div className="mb-6">
+            <iframe
+              src="https://www.youtube.com/embed/606RfUUgzx4?autoplay=1&loop=1&playlist=606RfUUgzx4"
+              title="Tony Stark Vibes"
+              allow="autoplay; encrypted-media"
+              allowFullScreen
+              className="w-full h-64 sm:h-96 rounded-lg"
+            ></iframe>
+          </div>
+          <div className="flex justify-center">
+            <img
+              src="https://c.tenor.com/Wv9sYavZUNgAAAAd/tenor.gif"
+              alt="Tony Stark Gif"
+              className="w-48 h-48 sm:w-64 sm:h-64 rounded-lg"
+            />
+          </div>
+          <p className="text-gray-400 text-sm mt-6">
+            "Sometimes you gotta run before you can walk." - Tony Stark
+          </p>
+        </div>
+      </motion.div>
     </div>
-    
-    <div class="gif-container">
-        <p>Current maintenance team energy:</p>
-        <img src="https://c.tenor.com/Wv9sYavZUNgAAAAd/tenor.gif" alt="Tony Stark GIF">
-    </div>
-</body>
-</html>
+  );
+};
+
+export default AuthPage;
