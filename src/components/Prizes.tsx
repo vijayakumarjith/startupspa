@@ -62,7 +62,7 @@ const Prizes = () => {
             </div>
             <h3 className="text-3xl font-bold text-white mb-4">Grand Prize</h3>
             <p className="text-purple-400 text-lg">
-              Prize worth ₹55,000 + exciting prizes and cupons
+              exciting prizes and cupons
             </p>
           </motion.div>
         </div>
